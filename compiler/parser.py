@@ -6,6 +6,7 @@ class Parser:
 
     def __init__(self, tokens):
         self.tokens = tokens
+        self.position = 0
 
     validCharacters = {
     1: '\0',
@@ -85,13 +86,13 @@ class Parser:
         start = self.tokens.pop(0)
         if len(start) != 1:
             raise Exception("Invalid start token")
-        return AST("start", None, None, None)
+        return AST("start", self.position, None, None, None)
     
     def parse_end(self):
         end = self.tokens.pop(0)
         if len(end) != 7:
             raise Exception("Invalid end token")
-        return AST("end", None, None, None)
+        return AST("end", self.position, None, None, None)
     
     def determine_expression_type(self):
         expression = self.tokens[0]
@@ -130,10 +131,13 @@ class Parser:
 
     def parse_bool(self):
         ident = self.parse_identifier()
+        print(f'ident: {ident}')
         value = self.tokens.pop(0)
-        if len(value != 1 and len(value != 2)):
+        value = len(value)
+        print(f'value: {value}')
+        if value != 1 and value != 2:
             raise Exception("Invalid bool token")
-        return AST("bool", ident, value)
+        return AST("bool", self.position, ident, value, None)
 
     def parse_number(self):
 
@@ -143,12 +147,12 @@ class Parser:
         if not self.identifier_is_number(value) or not self.identifier_is_string(ident):
             raise Exception("Invalid number parse token")
         
-        return AST("number", ident, value)
+        return AST("number", self.position, ident, value)
 
     def parse_conditional(self):
         comparator = self.parse_comparator()
         expression = self.parse_expression()
-        return AST("conditional", None, None, [comparator, expression])
+        return AST("conditional", self.position, None, None, [comparator, expression])
 
     def parse_update(self):
         identifier = self.parse_identifier()
@@ -156,7 +160,7 @@ class Parser:
         if not operator in self.operators.keys():
             raise Exception("Invalid operator token")
         identifier = self.parse_identifier()
-        return AST("update", None, None, [identifier, operator, identifier])
+        return AST("update", self.position, None, None, [identifier, operator, identifier])
 
     def parse_comparator(self):
         leftVal = self.parse_identifier()
@@ -171,39 +175,35 @@ class Parser:
         if len(rightVal == 1):
             raise Exception("Invalid comparator token")
         
-        return AST.ComparatorNode("comparator", None, None, [leftVal, comparator, rightVal])
+        return AST("comparator", self.position, None, None, [leftVal, comparator, rightVal])
 
     def parse_identifier(self):
+
         ident = ""
+
         while len(self.tokens) > 0:
             id = self.tokens.pop(0)
+            id = len(id)
             if not id in self.validCharacters.keys():
                 raise Exception("Invalid identifier token")
             if id == 1:
                 break
             ident += self.validCharacters[id]
+
         if len(self.tokens) == 0 or ident == "":
             raise Exception("Invalid identifier token")
+        
         return ident
 
     # Returns True if the identifier is a string
     def identifier_is_string(id):
         return re.search('[a-zA-Z]', id) is not None
     
-    # Returns True if the identifier is a string
+    # Returns True if the identifier is a number
     def identifier_is_number(id):
         return re.search('[a-zA-Z]', id) is None
     
     # Parser function
-    def parse_list(self, ast, tokens):
-        # Create the root of the AST
-
-        # Parse the tokens
-        while len(tokens) > 1:
-            new_expression = self.parse_rule(tokens)
-            ast.add_child(ast.root, new_expression)
-        return ast
-
     def create_program(self):
         
         consts = AST_List()
@@ -214,6 +214,8 @@ class Parser:
             raise Exception("Invalid start type")
         exprs.add(startExpr)
 
+        self.position += 1
+
         while len(self.tokens) != 0 and self.determine_expression_type() != "end":
             expType = self.determine_expression_type()
             if expType == "const":
@@ -222,7 +224,7 @@ class Parser:
                 exprs.add(self.parse_expression())
             else:
                 raise Exception("Invalid expression type")
-        
+            self.position += 1
         
         exprs.add(self.parse_end())
         if len(self.tokens) != 0 or exprs.list[-1].node_type != "end":
