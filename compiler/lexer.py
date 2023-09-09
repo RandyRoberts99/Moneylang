@@ -9,7 +9,7 @@ class Lexer:
         words = []
         with open(self.file_name, 'r') as file:
             for line in file:
-                word_list = line.strip().split(' ')
+                word_list = line.strip().split()
                 for word in word_list:
                     for char in word:
                         if char != '💰' and char != ' ':
