@@ -6,13 +6,13 @@ class Lexer:
         self.tokens = []
 
     def tokenize(self):
-        with open(self.file_name, "r") as file:
+        words = []
+        with open(self.file_name, 'r') as file:
             for line in file:
-                words = line.split(' ')
-                for word in words:
-
+                word_list = line.strip().split(' ')
+                for word in word_list:
                     for char in word:
                         if char != '💰' and char != ' ':
-                            print("Invalid character: " + char)
-                            exit(1)
-                    self.tokens.append(word)
+                            raise Exception("Invalid character exception")
+                    words.append(word)
+        return words

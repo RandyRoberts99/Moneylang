@@ -1,10 +1,19 @@
 
-from compiler import ast, parser, code_gen, lexer
+from compiler.lexer import Lexer
+from compiler.parser import Parser
+from compiler.ast import AST, AST_List
+# from compiler.code_gen import Code_Gen
 
-def __main__():
+def main():
 
-    newLexer = lexer("money_input.txt")
-    newLexer.tokenize()
+    lexer = Lexer("money_input.txt")
+    lexer.tokens = lexer.tokenize()
 
-    parser = parser(newLexer.tokens)
-    parser.parse_to_program()
+    print(lexer.tokens)
+
+    parser = Parser(lexer.tokens)
+    program_ast = parser.create_program()
+    print(program_ast)
+
+if __name__ == "__main__":
+    main()
