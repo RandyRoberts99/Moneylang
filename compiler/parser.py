@@ -212,8 +212,6 @@ class Parser:
                 exprs.add(self.parse_expression(tokens))
             else:
                 raise Exception("Invalid expression type")
-        
-        
     
     # Print the AST (you can define a more elaborate printer function)
     def print_ast(self, node, indent=0):
