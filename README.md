@@ -7,5 +7,7 @@ TODO:
 5. Finish Compiler
 
 Smaller TODO:
-1. Add codegen symboltable for type checking during generation
-2. Refine Parser Further for Define/Update
+1. ~~Add parser symboltable for type checking during generation~~
+2. ~~Refine Parser Further for Define/Update~~
+3. Refine Code_Gen and VM
+4. Make If into If-Else

@@ -1,7 +1,7 @@
 start
     define int a = 12
     condition a = 1
-        update a + 3
+        update a = "abcd"
     define bool b True
     define string c "abc"
     update a / int 3

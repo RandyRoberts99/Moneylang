@@ -5,10 +5,15 @@ class VM:
         self.memory = {}
         self.program = code_seq
         self.ip = 0  # Instruction pointer
+    def __str__(self):
+        return f"VM(stack={self.stack}, memory={self.memory}, ip={self.ip})"
 
     def run(self):
         while self.ip < len(self.program):
+            
             opcode = self.program[self.ip]
+            print(self.stack)
+            print(opcode)
 
             if opcode == "PUSH":
                 self.ip += 1
@@ -38,80 +43,70 @@ class VM:
             elif opcode == "ADD":
                 a = self.stack.pop()
                 b = self.stack.pop()
-                result = a + b
-                self.stack.append(result)
+                self.stack.append(a + b)
 
             elif opcode == "SUB":
                 a = self.stack.pop()
                 b = self.stack.pop()
-                result = b - a
-                self.stack.append(result)
+                self.stack.append(b - a)
 
             elif opcode == "MUL":
                 a = self.stack.pop()
                 b = self.stack.pop()
-                result = a * b
-                self.stack.append(result)
+                self.stack.append(a * b)
 
             elif opcode == "DIV":
                 a = self.stack.pop()
                 b = self.stack.pop()
                 if a == 0:
                     raise ValueError("Division by zero")
-                result = b / a
-                self.stack.append(result)
+                self.stack.append(b / a)
+
+            elif opcode == "MOD":
+                a = self.stack.pop()
+                b = self.stack.pop()
+                self.stack.append(b % a)
 
             elif opcode == "EQL":
                 a = self.stack.pop()
                 b = self.stack.pop()
-                if b == a:
-                    self.stack.append(True)
-                else:
-                    self.stack.append(False)
+                self.stack.append(b == a)
 
             elif opcode == "NEQ":
                 a = self.stack.pop()
                 b = self.stack.pop()
-                if b != a:
-                    self.stack.append(True)
-                else:
-                    self.stack.append(False)
+                self.stack.append(b != a)
             
             elif opcode == "LSS":
                 a = self.stack.pop()
                 b = self.stack.pop()
-                if b < a:
-                    self.stack.append(True)
-                else:
-                    self.stack.append(False)
+                self.stack.append(b < a)
 
             elif opcode == "GTR":
                 a = self.stack.pop()
                 b = self.stack.pop()
-                if b > a:
-                    self.stack.append(True)
-                else:
-                    self.stack.append(False)
+                self.stack.append(b > a)
 
             elif opcode == "PRINT":
                 variable_name = self.program[self.ip + 1]
                 value = self.memory.get(variable_name)
-                if value is not None:
-                    print(value)
-                else:
+                if value is None:
                     raise ValueError(f"Variable '{variable_name}' not found.")
+                print(value)
+                    
 
             elif opcode == "START":
                 self.stack.append(self.ip)
 
             elif opcode == "END":
+                self.stack.pop()
                 break
 
-            elif opcode == "JUMP_IF_TRUE":
+            elif opcode == "JUMP":
                 jump_target = self.program[self.ip + 1]
                 condition = self.stack.pop()
-                if condition:
-                    self.ip = jump_target
+                if not condition:
+                    self.ip += jump_target
                 else:
                     self.ip += 1
 

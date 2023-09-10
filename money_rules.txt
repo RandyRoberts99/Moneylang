@@ -80,8 +80,8 @@ validCharacters = {
     
     <define><type><id><value>
     <bool><id><value> (<1> or <2> for T or f)
-    <string><id><value>
-    <number><id><value>
+    <string><id><value> (any string that starts with a letter)
+    <number><id><value> (any number)
     
     <conditional> = <comparator><stmt>
     <comparator> 
@@ -90,6 +90,6 @@ validCharacters = {
     <type> (int, str, bool, id) <value>
     <expr> = <conditional, update>
     
-    <update> = <id><op>(=,+,-,*,/,%)<val>
+    <update> = <id><op>(=,+,-,*,/,%)<type><val>
     
     <end>    

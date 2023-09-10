@@ -6,6 +6,7 @@ class Parser:
     def __init__(self, tokens):
         self.tokens = tokens
         self.position = 0
+        self.symbols = {}
 
     validCharacters = {
         1: "\0",
@@ -58,7 +59,7 @@ class Parser:
     datatypes = {
         1: "identifier",
         2: "bool",
-        3: "int",
+        3: "number",
         4: "string",
     }
 
@@ -80,7 +81,7 @@ class Parser:
     }
 
     comparators = {
-        1: "=",
+        1: "==",
         2: ">",
         3: "<",
         4: "!=",
@@ -118,13 +119,16 @@ class Parser:
 
         if type == "bool":
             defined_AST = self.parse_bool()
-        elif type == "int":
+        elif type == "number":
             defined_AST = self.parse_number()
         elif type == "string":
             defined_AST = self.parse_string()
         else:
             raise Exception("Invalid type token")
         
+        # Pre-made symbol table for type checking
+        self.symbols[defined_AST.identifier] = defined_AST.datatype
+
         defined_AST.node_type = "define"
         return defined_AST
 
@@ -132,7 +136,7 @@ class Parser:
     def parse_bool(self):
         ident = self.parse_identifier()
         value = len(self.tokens.pop(0))
-        if value != 1 and value != 2 or not value in self.conditionals.keys():
+        if not (value <= 2 and value in self.conditionals.keys()):
             raise Exception("Invalid bool parse token")
         value = self.conditionals[value]
         
@@ -172,6 +176,7 @@ class Parser:
         comparator = len(self.tokens.pop(0))
         if not comparator in self.comparators.keys():
             raise Exception("Invalid comparator token")
+        comparator = AST("comparator", self.position, None, None, comparator, None)
 
         rightType = len(self.tokens.pop(0))
         rightVal = self.parse_identifier()
@@ -185,7 +190,7 @@ class Parser:
         if leftType == "bool" and leftVal <= 2 and leftVal in self.conditionals.keys():
             leftVal = self.conditionals[leftVal]
             leftVal = AST("conditional", self.position, "bool", None, leftVal, None)
-        elif leftType == "int" and self.value_is_number(leftVal):
+        elif leftType == "number" and self.value_is_number(leftVal):
             leftVal = AST("conditional", self.position, "number", None, int(leftVal), None)
         elif leftType == "identifier" and self.value_is_string(leftVal):
             leftVal = AST("conditional", self.position, "identifier", leftVal, leftVal, None)
@@ -199,9 +204,9 @@ class Parser:
         if rightType == "bool" and rightVal <= 2 and rightVal in self.conditionals.keys():
             rightVal = self.conditionals[rightVal]
             rightVal = AST("conditional", self.position, "bool", None, rightVal, None)
-        elif rightType == "int" and self.value_is_number(rightVal):
+        elif rightType == "number" and self.value_is_number(rightVal):
             rightVal = AST("conditional", self.position, "number", None, int(rightVal), None)
-        elif rightType == "id" and self.value_is_string(rightVal):
+        elif rightType == "identifier" and self.value_is_string(rightVal):
             rightVal = AST("conditional", self.position, "identifier", rightVal, rightVal, None)
         elif rightType == "string" and self.value_is_string(rightVal):
             if not self.value_is_string(rightVal):
@@ -209,7 +214,20 @@ class Parser:
             rightVal = AST("conditional", self.position, "string", None, rightVal, None)
         else:
             raise Exception("Invalid right value token")
+        
+        # Perform leftType and rightType checks
+        if leftType == "identifier" and leftVal.value in self.symbols.keys():
+            if self.symbols[leftVal.value] != rightType:
+                raise Exception("Invalid type match token in comparator. Cannot compare types.") 
             
+        if rightType == "identifier" and rightVal.value in self.symbols.keys():
+            if self.symbols[rightVal.value] != leftType:
+                raise Exception("Invalid type match token in comparator. Cannot compare types.")
+        
+        # Check raw-types (String vs String, Int vs Int, etc.)
+        if leftType != rightType and leftType != "identifier" and rightType != "identifier":
+            raise Exception("Invalid type match token in comparator. Cannot compare types.")
+
         return AST(
             "comparator", self.position, None, None, None, [leftVal, comparator, rightVal]
         )
@@ -218,16 +236,41 @@ class Parser:
     def parse_update(self):
 
         id1 = self.parse_identifier()
-        if not self.value_is_string(id1):
+        if not self.value_is_string(id1) or not id1 in self.symbols.keys():
             raise Exception("Invalid update token")
         
         operator = len(self.tokens.pop(0))
         if not operator in self.operators.keys():
             raise Exception("Invalid operator token")
-        
-        id2 = self.parse_identifier()
 
-        return AST("update", self.position, None, None, None, [id1, operator, id2])
+        id2Type = len(self.tokens.pop(0))
+        
+        if not id2Type in self.datatypes.keys():
+            raise Exception("Invalid datatype token")
+        id2Type = self.datatypes[id2Type]
+
+        if self.symbols[id1] != id2Type and self.operators[operator] != "=":
+            print(self.symbols[id1], id2Type)
+            raise Exception("Invalid type match token")
+        self.symbols[id1] = id2Type
+        
+        if id2Type == "bool":
+            id2 = len(self.tokens.pop(0))
+            if id2 != 1 and id2 != 2:
+                raise Exception("Invalid bool token in update")
+            id2 = self.conditionals[id2]
+        else:
+            id2 = self.parse_identifier()
+
+        if id2Type == "number":
+            if not self.value_is_number(id2):
+                raise Exception("Invalid number token in update")
+            id2 = int(id2)
+        
+        if (id2Type == "string" or id2Type == "identifier") and not self.value_is_string(id2):
+            raise Exception("Invalid string/id token in update")
+
+        return AST("update", self.position, None, None, None, [id1, operator, id2Type, id2])
 
     def parse_identifier(self):
         ident = ""
@@ -245,17 +288,13 @@ class Parser:
 
         return ident
 
-    # Returns True if the identifier is a string
+    # Returns True if the value is an identifier or string
     def value_is_string(self, val):
         return val[0].isalpha()
 
     # Returns True if the identifier is a number
     def value_is_number(self, val):
         return re.search("[a-zA-Z]", val) is None
-    
-    # TODO
-    def value_is_bool(self, val):
-        pass
 
     # Parser function
     def create_program(self):
@@ -270,8 +309,7 @@ class Parser:
 
         while len(self.tokens) != 0:
             exprs.add(self.parse_expression())
-            print(exprs.list[-1])
-            print(self.tokens)
+
             self.position += 1
             if exprs.list[-1].node_type == "end":
                 break
@@ -279,5 +317,5 @@ class Parser:
         # This should not run if code format is correct
         if len(self.tokens) != 0 or exprs.list[-1].node_type != "end":
             raise Exception("Invalid end or program type")
-
+        
         return Program(exprs)
