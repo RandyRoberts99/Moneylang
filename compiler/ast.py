@@ -1,20 +1,18 @@
 class Program:
-    def __init__(self, cds, exprs):
-        self.cds = cds
+    def __init__(self, exprs):
         self.exprs = exprs
 
     # Debug function
     def __str__(self):
-        cd_list_comprehensions = [cd.parse() for cd in self.cds.list]
-        ", ".join(cd_list_comprehensions)
         expr_list_comprehensions = [expr.parse() for expr in self.exprs.list]
         ", ".join(expr_list_comprehensions)
-        return f'Program(cds={cd_list_comprehensions}, exprs={expr_list_comprehensions})'
+        return f'Program(exprs={expr_list_comprehensions})'
 
 class AST:
-    def __init__(self, node_type, position, identifier, value, children):
+    def __init__(self, node_type, position, datatype, identifier, value, children):
         self.node_type = node_type
         self.position = position
+        self.datatype = datatype
         self.identifier = identifier
         self.value = value
         self.children = children if children is not None else []
@@ -23,10 +21,10 @@ class AST:
         parent.children.append(child)
 
     def parse(self):
-        return f'node_type: {self.node_type}, position: {self.position}, identifier: {self.identifier}, value: {str(self.value)}'
+        return f'node_type: {self.node_type}, position: {self.position}, identifier: {self.identifier}, value: {str(self.value)}, children: {self.children}'
 
     def __str__(self):
-        return f'node_type: {self.node_type}, position: {self.position}, identifier: {self.identifier}, value: {str(self.value)}'
+        return f'node_type: {self.node_type}, position: {self.position}, identifier: {self.identifier}, value: {str(self.value)}, children: {self.children}'
 
 class AST_List:
     def __init__(self):

@@ -1,8 +1,12 @@
 start
-    int a = 12
-    if a = 1
-        a + 1
+    define int a = 12
+    condition a = 1
+        update a + 3
+    define bool b True
+    define string c "abc"
+    update a / int 3
+    print id a
 end
 
-# For Reference
+For Reference
 💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰 = 1

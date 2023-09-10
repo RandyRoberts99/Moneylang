@@ -1,12 +1,16 @@
 
 expressions = 
 💰 = 'start'
+💰💰 = 'define'
+💰💰💰 = 'condition'
+💰💰💰💰 = 'update'
+💰💰💰💰💰 = 'end'
+
+datatypes = 
+💰 = 'identifier'
 💰💰 = 'bool'
 💰💰💰 = 'int'
 💰💰💰💰 = 'string'
-💰💰💰💰💰 = 'condition'
-💰💰💰💰💰💰 = 'update'
-💰💰💰💰💰💰💰 = 'end'
 
 operators = 
 💰 = '='
@@ -71,3 +75,21 @@ validCharacters = {
     37: '8',
     38: '9',
     }
+
+    <start>
+    
+    <define><type><id><value>
+    <bool><id><value> (<1> or <2> for T or f)
+    <string><id><value>
+    <number><id><value>
+    
+    <conditional> = <comparator><stmt>
+    <comparator> 
+    <type>(int, str, bool, id) <value>
+    <relop>
+    <type> (int, str, bool, id) <value>
+    <expr> = <conditional, update>
+    
+    <update> = <id><op>(=,+,-,*,/,%)<val>
+    
+    <end>    

@@ -1,0 +1,27 @@
+About Moneylang:
+
+Money talks. That is all. (no jk)
+
+Moneylang is designed to use only two characters -
+'💰', and ' '.
+
+Parsing is extremely contextual, and requires an
+understanding of the rules of the language.
+
+Each expression must start with a command. Commands can be found below:
+Start - Starts the program syntax
+End - Ends the program syntax
+Define - Creates a new variable in the format <define><type><id><value>.
+Update - Updates a value in the program in the format <id><op><val> 
+Conditional - A basic if-statement. You can have nested if-statements. Format is <comparator><expr>
+
+Keys:
+<type> = The specified type of the variable.
+<id> = The name of the variable.
+<value> = The value of that variable relative to the type. (For example: strings and references can be interchanged)
+<op> = Any valid computational operator. (=,+,-,*,/,%)
+<comparator> = A comparison statement. (a > b)
+<expr> An expression. It could be a Define, Update, or Conditional statement.
+
+Moneybags are grouped together and seperated by spaces. 
+A basic program that starts and ends can be defined by: '💰 💰💰💰💰💰'
