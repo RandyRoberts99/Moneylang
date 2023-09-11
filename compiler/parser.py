@@ -343,7 +343,6 @@ class Parser:
 
         while len(self.tokens) != 0:
             exprs.add(self.parse_expression())
-            print(exprs.list[-1])
             self.position += 1
             if exprs.list[-1].node_type == "end":
                 break
