@@ -18,8 +18,8 @@ understanding of the rules of the language.
 2. (id) = The name of the variable.
 3. (value) = The value of that variable relative to the type. (For example: strings and references can be interchanged)
 4. (op) = Any valid computational operator. (=,+,-,*,/,%)
-5. (comparator) = A comparison statement. (a ) b)
-6. (expr) An expression. It could be a Define, Update, or Conditional statement.
+5. (comparator) = A comparison statement. (a < b)
+6. (expr) = An expression. It could be a Define, Update, or Conditional statement.
 
 ### Moneybags are grouped together and seperated by spaces. 
 ### A basic program that starts and ends can be defined by: '💰 💰💰💰💰💰💰'
