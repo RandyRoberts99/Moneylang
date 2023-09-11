@@ -12,8 +12,10 @@ class VM:
         while self.ip < len(self.program):
             
             opcode = self.program[self.ip]
-            print(self.stack)
-            print(opcode)
+
+            # Debugging
+            #print(self.stack)
+            #print(opcode)
 
             if opcode == "PUSH":
                 self.ip += 1
@@ -88,12 +90,8 @@ class VM:
                 self.stack.append(b > a)
 
             elif opcode == "PRINT":
-                variable_name = self.program[self.ip + 1]
-                value = self.memory.get(variable_name)
-                if value is None:
-                    raise ValueError(f"Variable '{variable_name}' not found.")
+                value = self.stack.pop()
                 print(value)
-                    
 
             elif opcode == "START":
                 self.stack.append(self.ip)

@@ -6,7 +6,7 @@ from compiler.vm import VM
 
 def main():
 
-    lexer = Lexer("money_input.txt")
+    lexer = Lexer("tests/money_input3.txt")
     lexer.tokens = lexer.tokenize()
 
     # debug

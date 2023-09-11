@@ -24,4 +24,4 @@ Keys:
 <expr> An expression. It could be a Define, Update, or Conditional statement.
 
 Moneybags are grouped together and seperated by spaces. 
-A basic program that starts and ends can be defined by: '💰 💰💰💰💰💰'
+A basic program that starts and ends can be defined by: '💰 💰💰💰💰💰💰'

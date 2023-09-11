@@ -25,6 +25,9 @@ class Code_Gen:
 
         elif ir.node_type == "update":
             self.generate_update(ir)
+        
+        elif ir.node_type == "print":
+            self.generatie_print(ir)
 
         elif ir.node_type == "end":
             self.generate_end(ir)
@@ -51,7 +54,7 @@ class Code_Gen:
 
         if ir.children[2] == "identifier":
             self.code_seq.append("LOAD")
-            self.code_seq.append(ir.children[2])
+            self.code_seq.append(ir.children[3])
         else:
             self.code_seq.append("PUSH")
             self.code_seq.append(ir.children[3])
@@ -85,6 +88,17 @@ class Code_Gen:
             self.code_seq.append(ir.children[2].value)
 
         self.generate_relOp(ir.children[1].value)
+
+    def generatie_print(self, ir):
+        
+        if ir.identifier == "identifier":
+            self.code_seq.append("LOAD")
+            self.code_seq.append(ir.value)
+        else:
+            self.code_seq.append("PUSH")
+            self.code_seq.append(ir.value)
+
+        self.code_seq.append("PRINT")
 
     def generate_expr(self, ir):
         if ir.node_type == "conditional":

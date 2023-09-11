@@ -4,7 +4,8 @@ expressions =
 💰💰 = 'define'
 💰💰💰 = 'condition'
 💰💰💰💰 = 'update'
-💰💰💰💰💰 = 'end'
+💰💰💰💰💰 = 'print'
+💰💰💰💰💰💰 = 'end'
 
 datatypes = 
 💰 = 'identifier'
@@ -35,6 +36,9 @@ comparators =
 💰💰💰💰 = '!='
 
 identifier = the number of money bags for each index in the identifier. For example, 12 = 💰💰 💰💰💰 💰, ending character is 💰,
+
+For Reference
+💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰 = 1
 
 validCharacters = {
     1: '\0',
@@ -85,11 +89,13 @@ validCharacters = {
     
     <conditional> = <comparator><stmt>
     <comparator> 
-    <type>(int, str, bool, id) <value>
-    <relop>
-    <type> (int, str, bool, id) <value>
+
+    -><type>(int, str, bool, id) <value>
+    -><relop> --> (=,>,<,!=)
+    -><type> (int, str, bool, id) <value>
     <expr> = <conditional, update>
     
     <update> = <id><op>(=,+,-,*,/,%)<type><val>
+    <print> = <type><value>
     
     <end>    
