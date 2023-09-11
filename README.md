@@ -21,5 +21,4 @@ understanding of the rules of the language.
 5. (comparator) = A comparison statement. (a < b)
 6. (expr) = An expression. It could be a Define, Update, or Conditional statement.
 
-### Moneybags are grouped together and seperated by spaces. 
-### A basic program that starts and ends can be defined by: '💰 💰💰💰💰💰💰'
+### Moneybags are grouped together and seperated by spaces. A basic program that starts and ends can be defined by: '💰 💰💰💰💰💰💰'
